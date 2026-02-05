@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Sistem Tempahan Buku</title>
+</head>
+
+<body>
+    <h2>Sistem Tempahan Buku</h2>
+
+    <label>Nama Pelanggan:</label><br>
+    <input type="text" id="nama"><br><br>
+
+    <label>Buku:</label><br>
+    <select id="buku">
+        <option value="">-- Pilih Buku --</option>
+        <option value="Buku Sains">Buku Sains</option>
+        <option value="Buku Matematik">Buku Matematik</option>
+    </select><br><br>
+
+    <label>Kuantiti:</label><br>
+    <input type="number" id="kuantiti"><br><br>
+
+    <button onclick="tempahBuku()">Tempah Buku</button>
+
+    <hr>
+
+    <h3>Senarai Tempahan</h3>
+
+    <table border="1" width="70%">
+        <tr>
+            <th>Nama</th>
+            <th>Buku</th>
+            <th>Kuantiti</th>
+            <th>Tindakan</th>
+        </tr>
+        <tbody id="senarai"></tbody>
+    </table>
+
+<script>
+let tempahan = JSON.parse(localStorage.getItem("tempahanBuku")) || [];
+paparTempahan();
+
+function tempahBuku() {
+    let nama = document.getElementById("nama").value;
+    let buku = document.getElementById("buku").value;
+    let kuantiti = document.getElementById("kuantiti").value;
+
+    if (nama === "" || buku === "" || kuantiti === "") {
+        alert("Sila lengkapkan semua maklumat!");
+        return;
+    }
+
+    tempahan.push({ nama, buku, kuantiti });
+    localStorage.setItem("tempahanBuku", JSON.stringify(tempahan));
+
+    paparTempahan();
+
+    document.getElementById("nama").value = "";
+    document.getElementById("kuantiti").value = "";
+}
+
+function paparTempahan() {
+    let senarai = document.getElementById("senarai");
+    senarai.innerHTML = "";
+
+    tempahan.forEach((item, index) => {
+        let row = senarai.insertRow();
+
+        row.insertCell().innerHTML = item.nama;
+        row.insertCell().innerHTML = item.buku;
+        row.insertCell().innerHTML = item.kuantiti;
+        row.insertCell().innerHTML =
+            `<button onclick="padam(${index})">Padam</button>`;
+    });
+}
+
+function padam(index) {
+    tempahan.splice(index, 1);
+    localStorage.setItem("tempahanBuku", JSON.stringify(tempahan));
+    paparTempahan();
+}
+</script>
+
+</body>
+</html>
